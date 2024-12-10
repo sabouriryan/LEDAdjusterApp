@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Integer to ESP32</title>
+</head>
+<body>
+  <h1>Send Integer to ESP32</h1>
+  <p>Enter an integer below and click the "Send" button to send it to the ESP32.</p>
+
+  <!-- Input box for integer -->
+  <label for="integer">Enter an integer:</label>
+  <input type="number" id="integer" placeholder="Enter a number">
+
+  <!-- Button to send the integer -->
+  <button onclick="sendInteger()">Send</button>
+
+  <!-- Placeholder for response -->
+  <p id="response"></p>
+
+  <script>
+    // Replace with your ESP32's IP address
+    const ESP32_IP = "http://192.168.4.143";
+    const ENDPOINT = "/set_brightness";
+
+    // Function to send the integer to the ESP32
+    async function sendInteger() {
+      const integerValue = document.getElementById('integer').value;
+
+      if (!integerValue) {
+        document.getElementById('response').innerText = "Please enter a valid integer.";
+        return;
+      }
+
+      try {
+        // Send HTTP GET request to ESP32
+        const response = await fetch(`${ESP32_IP}${ENDPOINT}?value=${integerValue}`);
+        
+        // Handle response
+        if (response.ok) {
+          const text = await response.text();
+          document.getElementById('response').innerText = `ESP32 Response: ${text}`;
+        } else {
+          document.getElementById('response').innerText = `Error: ${response.status}`;
+        }
+      } catch (error) {
+        document.getElementById('response').innerText = `Failed to connect to ESP32: ${error}`;
+      }
+    }
+  </script>
+</body>
+</html>
